@@ -8,11 +8,17 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Saer.Services;
 
 [RequireUserPermission(GuildPermission.Administrator)]
-internal class ModerationModule : ModuleBase<SocketCommandContext>
+internal class ModerationModule : General
 {
+    public ModerationModule(IHost host, ILogger<General> logger) : base(host, logger)
+    {
+    }
+
     #region Ban
     [Command("ban")]
     [Summary("Ban a user")]
@@ -30,23 +36,9 @@ internal class ModerationModule : ModuleBase<SocketCommandContext>
     }
     #endregion
 
-    #region Mute
-    [Command("mute")]
-    [Summary("Mute a user")]
-    public async Task MuteMembersAsync(SocketGuildUser socketGuildUser, [Remainder] string reason)
-    {
-        if (Context.Guild.GetUser(socketGuildUser.Id).Roles.Any(r => r.Name == "Bonked"))
-        {
-            await ReplyAsync($"{socketGuildUser.Username}#{socketGuildUser.Discriminator} Has already been Muted!");
-        }
-        else
-        {
-            await Context.Guild.GetUser(socketGuildUser.Id).AddRoleAsync(930118743332384878);
-            await ReplyAsync($"{socketGuildUser.Username}#{socketGuildUser.Discriminator} Has been Muted! Reason: {reason}");
-        }
 
-    }
-    #endregion
+    private static LogLevel GetLogLevel(LogSeverity severity)
+        => (LogLevel)Math.Abs((int)severity - 5);
 }
 
 [Group("status")]
@@ -65,15 +57,16 @@ public class StatusModule : ModuleBase<SocketCommandContext>
     [Summary("Set a new activity status")]
     public async Task SetOnlineAsync()
     {
-        LongRunningService.setActivityStatus = UserStatus.Online;
+        await Context.Client.SetStatusAsync(UserStatus.Online);
         await ReplyAsync("new status is set");
     }
 
     [Command("away")]
+    [Alias("afk")]
     [Summary("Set a new activity status")]
     public async Task SetAwayAsync()
     {
-        LongRunningService.setActivityStatus = UserStatus.AFK;
+        await Context.Client.SetStatusAsync(UserStatus.AFK);
         await ReplyAsync("new status is set");
     }
 }

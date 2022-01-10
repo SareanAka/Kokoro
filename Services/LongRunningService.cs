@@ -14,12 +14,13 @@ using Microsoft.Extensions.Logging;
 
 public class LongRunningService : DiscordClientService
 {
-    public static string updateStatus = "KoyoKek";
-    public static UserStatus setActivityStatus = UserStatus.Online;
+    public static string updateStatus = "Assisting Koyori";
+
 
     public LongRunningService(DiscordSocketClient client, ILogger<DiscordClientService> logger)
         : base(client, logger)
     {
+
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -31,7 +32,6 @@ public class LongRunningService : DiscordClientService
         while (!stoppingToken.IsCancellationRequested)
         {
             await Client.SetActivityAsync(new Game(updateStatus));
-            await Client.SetStatusAsync(setActivityStatus);
             await Task.Delay(10000, stoppingToken);
         }
     }

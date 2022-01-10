@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
@@ -66,6 +67,24 @@ public class General : ModuleBase<SocketCommandContext>
             .Build();
 
         await ReplyAsync(embed: embed);
+    }
+    #endregion
+
+    #region Mute
+    [Command("mute")]
+    [Summary("Mute a user")]
+    public async Task MuteMembersAsync(SocketGuildUser socketGuildUser, [Remainder] string reason)
+    {
+        if (socketGuildUser.Roles.Any(r => r.Id == 930118743332384878))
+        {
+            await ReplyAsync($"**{socketGuildUser.Username}#{socketGuildUser.Discriminator}** Has already been Muted!");
+        }
+        else
+        {
+            await socketGuildUser.AddRoleAsync(930118743332384878);
+            await ReplyAsync($"**{socketGuildUser.Username}#{socketGuildUser.Discriminator}** Has been Muted. Reason: {reason}");
+        }
+
     }
     #endregion
 
