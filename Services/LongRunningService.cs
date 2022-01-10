@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 public class LongRunningService : DiscordClientService
 {
-    public static string updateStatus = "Assisting Koyori";
+    public static string updateStatus = "Assisting Koyori~";
 
 
     public LongRunningService(DiscordSocketClient client, ILogger<DiscordClientService> logger)

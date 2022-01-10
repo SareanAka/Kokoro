@@ -33,6 +33,11 @@ public class General : ModuleBase<SocketCommandContext>
     [Summary("Bot sends a respons")]
     public async Task PingAsync()
     {
+        if (Context.Channel.Id != 915308889975697460)
+        {
+            return;
+        }
+
         _logger.LogInformation("User {user} used the ping command!", Context.User.Username);
         await ReplyAsync("Pong!");
     }
@@ -43,6 +48,11 @@ public class General : ModuleBase<SocketCommandContext>
     [Summary("Check the current status")]
     public async Task StatusAsync()
     {
+        if (Context.Channel.Id != 915308889975697460)
+        {
+            return;
+        }
+
         await ReplyAsync(LongRunningService.updateStatus);
     }
     #endregion
@@ -52,6 +62,11 @@ public class General : ModuleBase<SocketCommandContext>
     [Summary("Get info on a user")]
     public async Task InfoAsync(SocketGuildUser socketGuildUser = null)
     {
+        if (Context.Channel.Id != 915308889975697460)
+        {
+            return;
+        }
+
         if (socketGuildUser == null)
         {
             socketGuildUser = Context.User as SocketGuildUser;
@@ -73,6 +88,7 @@ public class General : ModuleBase<SocketCommandContext>
     #region Mute
     [Command("mute")]
     [Summary("Mute a user")]
+    [RequireUserPermission(GuildPermission.Administrator)]
     public async Task MuteMembersAsync(SocketGuildUser socketGuildUser, [Remainder] string reason)
     {
         if (socketGuildUser.Roles.Any(r => r.Id == 930118743332384878))
@@ -85,6 +101,36 @@ public class General : ModuleBase<SocketCommandContext>
             await ReplyAsync($"**{socketGuildUser.Username}#{socketGuildUser.Discriminator}** Has been Muted. Reason: {reason}");
         }
 
+    }
+    #endregion
+
+    #region Echo
+    [Command("echo")]
+    [RequireUserPermission(GuildPermission.Administrator)]
+    public async Task Echo(IMessageChannel channel, [Remainder] string input)
+    {
+        ulong c = channel.Id;
+        var chnl = Context.Client.GetChannel(c) as IMessageChannel;
+        await chnl.SendMessageAsync(input);
+        await ReplyAsync($"Message sent to <#{c}>");
+    }
+    #endregion
+
+    #region Ban
+    [Command("ban")]
+    [Summary("Ban a user")]
+    [RequireUserPermission(GuildPermission.BanMembers)]
+    public async Task BanMembersAsync(SocketGuildUser socketGuildUser, [Remainder] string reason = null)
+    {
+        if (Context.Guild.GetBanAsync(socketGuildUser) == null)
+        {
+            await Context.Guild.AddBanAsync(socketGuildUser, 0, reason);
+            await ReplyAsync($"{socketGuildUser.Username}#{socketGuildUser.Discriminator} Has been Banned! Reason: {reason}");
+        }
+        else
+        {
+            await ReplyAsync($"{socketGuildUser.Username}#{socketGuildUser.Discriminator} Has already been Banned!");
+        }
     }
     #endregion
 

@@ -20,9 +20,9 @@ internal class ModerationModule : General
     }
 
     #region Ban
-    [Command("ban")]
+    [Command("banwwqe")]
     [Summary("Ban a user")]
-    public async Task BanMembersAsync(SocketGuildUser socketGuildUser, [Remainder] string reason)
+    public async Task BandfsdfsMembersAsync(SocketGuildUser socketGuildUser, [Remainder] string reason)
     {
         if (Context.Guild.GetBanAsync(socketGuildUser) == null)
         {
