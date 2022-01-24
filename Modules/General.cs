@@ -85,25 +85,6 @@ public class General : ModuleBase<SocketCommandContext>
     }
     #endregion
 
-    #region Mute
-    [Command("mute")]
-    [Summary("Mute a user")]
-    [RequireUserPermission(GuildPermission.Administrator)]
-    public async Task MuteMembersAsync(SocketGuildUser socketGuildUser, [Remainder] string reason)
-    {
-        if (socketGuildUser.Roles.Any(r => r.Id == 930118743332384878))
-        {
-            await ReplyAsync($"**{socketGuildUser.Username}#{socketGuildUser.Discriminator}** Has already been Muted!");
-        }
-        else
-        {
-            await socketGuildUser.AddRoleAsync(930118743332384878);
-            await ReplyAsync($"**{socketGuildUser.Username}#{socketGuildUser.Discriminator}** Has been Muted. Reason: {reason}");
-        }
-
-    }
-    #endregion
-
     #region Echo
     [Command("echo")]
     [RequireUserPermission(GuildPermission.Administrator)]
@@ -116,37 +97,26 @@ public class General : ModuleBase<SocketCommandContext>
     }
     #endregion
 
-    #region Ban
-    [Command("ban")]
-    [Summary("Ban a user")]
-    [RequireUserPermission(GuildPermission.BanMembers)]
-    public async Task BanMembersAsync(SocketGuildUser socketGuildUser, [Remainder] string reason = null)
+    [Command("prefix")]
+    public async Task GetPrefix()
     {
-        if (Context.Guild.GetBanAsync(socketGuildUser) == null)
-        {
-            await Context.Guild.AddBanAsync(socketGuildUser, 0, reason);
-            await ReplyAsync($"{socketGuildUser.Username}#{socketGuildUser.Discriminator} Has been Banned! Reason: {reason}");
-        }
-        else
-        {
-            await ReplyAsync($"{socketGuildUser.Username}#{socketGuildUser.Discriminator} Has already been Banned!");
-        }
+        await ReplyAsync($"My Prefix is");
     }
-    #endregion
 
     private static LogLevel GetLogLevel(LogSeverity severity)
         => (LogLevel)Math.Abs((int)severity - 5);
 }
 
 [Group("karaoke")]
-public class KaraokeModule : ModuleBase<SocketCommandContext>
+[Alias("k")]
+public class KaraokeModule : KokoroModuleBase
 {
     #region Join Queue
     [Command("join")]
     [Summary("Join the Karaoke queue")]
     public async Task JoinQueue(SocketGuildUser socketGuildUser = null)
     {
-        if (Context.Channel.Id != 930125947762520066)
+        if (Context.Channel.Id != 931905280374112317)
         {
             return;
         }
@@ -165,24 +135,21 @@ public class KaraokeModule : ModuleBase<SocketCommandContext>
         KaraokeList.Users.Add($"{socketGuildUser.Username}");
 
         string combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1));
-
-        var embedList = new KoyoriEmbedBuilder()
-            .WithAuthor("Karaoke Queue")
-            .WithDescription(combindedString);
+        string author = "Karaoke Queue";
+        string title;
+        
 
         if (KaraokeList.Users[0] != null)
         {
-            embedList.WithTitle($"Current singer: {KaraokeList.Users[0]}");
+            title = $"Current singer: {KaraokeList.Users[0]}";
         }
         else
         {
-            embedList.WithTitle($"The Queue is empty");
+            title = $"The Queue is empty";
         }
 
-        var buildEmbed = embedList.Build();
-
         await ReplyAsync($"{socketGuildUser.Username} has been added to the queue");
-        await Context.Channel.SendMessageAsync(embed: buildEmbed);
+        await SendEmbedAsync(author, title, combindedString);
     }
     #endregion
 
@@ -192,7 +159,7 @@ public class KaraokeModule : ModuleBase<SocketCommandContext>
     [RequireUserPermission(ChannelPermission.ManageChannels)]
     public async Task RemoveFromQueue(SocketGuildUser socketGuildUser = null)
     {
-        if (Context.Channel.Id != 930125947762520066)
+        if (Context.Channel.Id != 931905280374112317)
         {
             return;
         }
@@ -213,30 +180,31 @@ public class KaraokeModule : ModuleBase<SocketCommandContext>
             return;
         }
 
-        var embedList = new KoyoriEmbedBuilder()
-            .WithAuthor("Karaoke Queue");
 
         string combindedString;
+        string author = "Karaoke Queue";
+        string title;
 
         if (KaraokeList.Users.Count > 1)
         {
             combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1));
-            embedList.WithDescription(combindedString);
+        }
+        else
+        {
+            combindedString = "";
         }
 
         if (KaraokeList.Users.Count > 0)
         {
-            embedList.WithTitle($"Current singer: {KaraokeList.Users[0]}");
+            title = $"Current singer: {KaraokeList.Users[0]}";
         }
         else
         {
-            embedList.WithTitle($"The Queue is empty");
+            title = $"The Queue is empty";
         }
 
-        var buildEmbed = embedList.Build();
-
         await ReplyAsync($"{socketGuildUser.Username} has been removed from the queue");
-        await Context.Channel.SendMessageAsync(embed: buildEmbed);
+        await SendEmbedAsync(author, title, combindedString);
     }
     #endregion
 
@@ -245,7 +213,7 @@ public class KaraokeModule : ModuleBase<SocketCommandContext>
     [Summary("Leave from the karaoke queue")]
     public async Task LeaveQueue()
     {
-        if (Context.Channel.Id != 930125947762520066)
+        if (Context.Channel.Id != 931905280374112317)
         {
             return;
         }
@@ -262,29 +230,30 @@ public class KaraokeModule : ModuleBase<SocketCommandContext>
             return;
         }
 
-        var embedList = new KoyoriEmbedBuilder()
-            .WithAuthor("Karaoke Queue");
-
         string combindedString;
+        string author = "Karaoke Queue";
+        string title;
+
         if (KaraokeList.Users.Count > 1)
         {
             combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1));
-            embedList.WithDescription(combindedString);
+        }
+        else
+        {
+            combindedString = "";
         }
 
         if (KaraokeList.Users.Count > 0)
         {
-            embedList.WithTitle($"Current singer: {KaraokeList.Users[0]}");
+            title = $"Current singer: {KaraokeList.Users[0]}";
         }
         else
         {
-            embedList.WithTitle($"The Queue is empty");
+            title = $"The Queue is empty";
         }
 
-        var buildEmbed = embedList.Build();
-
         await ReplyAsync($"You have left the Queue");
-        await Context.Channel.SendMessageAsync(embed: buildEmbed);
+        await SendEmbedAsync(author, title, combindedString);
     }
     #endregion
 
@@ -294,33 +263,78 @@ public class KaraokeModule : ModuleBase<SocketCommandContext>
     [Summary("Remove someone from the karaoke queue")]
     public async Task DisplayQueue()
     {
-        if (Context.Channel.Id != 930125947762520066)
+        if (Context.Channel.Id != 931905280374112317)
         {
             return;
         }
 
-        var embedList = new KoyoriEmbedBuilder()
-            .WithAuthor("Karaoke Queue");
-
         string combindedString;
+        string author = "Karaoke Queue";
+        string title;
+
         if (KaraokeList.Users.Count > 1)
         {
             combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1));
-            embedList.WithDescription(combindedString);
+        }
+        else
+        {
+            combindedString = "";
         }
 
         if (KaraokeList.Users.Count > 0)
         {
-            embedList.WithTitle($"Current singer: {KaraokeList.Users[0]}");
+            title = $"Current singer: {KaraokeList.Users[0]}";
         }
         else
         {
-            embedList.WithTitle($"The Queue is empty");
+            title = $"The Queue is empty";
         }
 
-        var buildEmbed = embedList.Build();
-
-        await Context.Channel.SendMessageAsync(embed: buildEmbed);
+        await SendEmbedAsync(author, title, combindedString);
     }
     #endregion
+
+    #region Move Queue
+    [Command("next")]
+    [Alias("n")]
+    [Summary("move the karaoke queue")]
+    public async Task NextQueueAsync()
+    {
+        if (Context.Channel.Id != 931905280374112317)
+        {
+            return;
+        }
+
+        string firsUser = KaraokeList.Users[0];
+
+        KaraokeList.Users.Add(firsUser);
+        KaraokeList.Users.RemoveAt(0);
+
+        string combindedString;
+        string author = "Karaoke Queue";
+        string title;
+
+        if (KaraokeList.Users.Count > 1)
+        {
+            combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1));
+        }
+        else
+        {
+            combindedString = "";
+        }
+
+        if (KaraokeList.Users.Count > 0)
+        {
+            title = $"Current singer: {KaraokeList.Users[0]}";
+        }
+        else
+        {
+            title = $"The Queue is empty";
+        }
+
+
+        await SendEmbedAsync(author, title, combindedString);
+    }
+    #endregion
+
 }

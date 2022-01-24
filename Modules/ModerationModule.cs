@@ -12,17 +12,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Saer.Services;
 
-[RequireUserPermission(GuildPermission.Administrator)]
-internal class ModerationModule : General
+public class ModerationModule : ModuleBase
 {
-    public ModerationModule(IHost host, ILogger<General> logger) : base(host, logger)
-    {
-    }
 
     #region Ban
-    [Command("banwwqe")]
+    [Command("ban")]
     [Summary("Ban a user")]
-    public async Task BandfsdfsMembersAsync(SocketGuildUser socketGuildUser, [Remainder] string reason)
+    [RequireUserPermission(GuildPermission.BanMembers)]
+    public async Task BanMembersAsync(IUser socketGuildUser, [Remainder] string reason = null)
     {
         if (Context.Guild.GetBanAsync(socketGuildUser) == null)
         {
@@ -36,10 +33,30 @@ internal class ModerationModule : General
     }
     #endregion
 
+    #region Mute
+    [Command("mute")]
+    [Summary("Mute a user")]
+    [RequireUserPermission(GuildPermission.ManageRoles)]
+    public async Task MuteMembersAsync(SocketGuildUser socketGuildUser, [Remainder] string reason)
+    {
+        if (socketGuildUser.Roles.Any(r => r.Id == 930118743332384878))
+        {
+            await ReplyAsync($"**{socketGuildUser.Username}#{socketGuildUser.Discriminator}** Has already been Muted!");
+        }
+        else
+        {
+            await socketGuildUser.AddRoleAsync(930118743332384878);
+            await ReplyAsync($"**{socketGuildUser.Username}#{socketGuildUser.Discriminator}** Has been Muted. Reason: {reason}");
+        }
+
+    }
+    #endregion
 
     private static LogLevel GetLogLevel(LogSeverity severity)
         => (LogLevel)Math.Abs((int)severity - 5);
 }
+
+
 
 [Group("status")]
 [RequireOwner]

@@ -29,5 +29,6 @@ public class BotStatusService : DiscordClientService
         var image = new Image(fileStream);
         await Client.SetActivityAsync(new Game(status));
         await Client.CurrentUser.ModifyAsync(u => u.Avatar = image);
+        await Client.CurrentUser.ModifyAsync(u => u.Username = "Kokoro");
     }
 }
