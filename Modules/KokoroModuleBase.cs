@@ -1,12 +1,34 @@
 ﻿using Discord;
 using Discord.Commands;
 using Kokoro.Common;
+using Kokoro.Database;
 using System.Threading.Tasks;
 
 namespace Kokoro.Modules
 {
     public abstract class KokoroModuleBase : ModuleBase<SocketCommandContext>
     {
+        //The dataAccessLayer of Kokoro
+        public readonly DataAccessLayer DataAccessLayer;
+
+        public string Prefix
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_prefix))
+                {
+                    _prefix = DataAccessLayer.GetPrefix(Context.Guild.Id);
+                }
+                return _prefix;
+            }
+        }
+
+        private string _prefix;
+
+        public KokoroModuleBase(DataAccessLayer dataAccessLayer)
+        {
+            DataAccessLayer = dataAccessLayer;
+        }
 
         /// <summary>
         /// Send an embed containing a title and description

@@ -7,7 +7,10 @@ using Discord;
 using Discord.Addons.Hosting;
 using Discord.Commands;
 using Discord.WebSocket;
+using Kokoro.Database;
+using Kokoro.Database.Context;
 using Kokoro.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -48,6 +51,11 @@ public class Bot
                 services.AddHostedService<InteractionHandler>();
                 services.AddHostedService<BotStatusService>();
                 services.AddHostedService<LongRunningService>();
+                services.AddDbContextFactory<KokoroDBContext>(options => 
+                options.UseMySql(
+                    context.Configuration.GetConnectionString("default"),
+                    new MySqlServerVersion(new Version(8, 0, 28))))
+                .AddSingleton<DataAccessLayer>();
             })
             .Build();
 

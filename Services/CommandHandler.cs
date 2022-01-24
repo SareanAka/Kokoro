@@ -10,16 +10,19 @@ using Discord;
 using Discord.Addons.Hosting;
 using Discord.Commands;
 using Discord.WebSocket;
+using Kokoro.Database;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-public class CommandHandler : DiscordClientService
+public class CommandHandler : KokoroService
 {
     private readonly IServiceProvider _provider;
     private readonly CommandService _commandService;
     private readonly IConfiguration _config;
 
-    public CommandHandler(DiscordSocketClient client, ILogger<CommandHandler> logger, IServiceProvider provider, CommandService commandService, IConfiguration config) : base(client, logger)
+    public CommandHandler(DiscordSocketClient client, ILogger<DiscordClientService> logger, IServiceProvider provider, 
+        CommandService commandService, DataAccessLayer dataAccessLayer, IConfiguration config )
+        : base(client, logger, config, dataAccessLayer)
     {
         _provider = provider;
         _commandService = commandService;
@@ -39,7 +42,9 @@ public class CommandHandler : DiscordClientService
         if (message.Source != MessageSource.User) return;
 
         int argPos = 0;
-        if (!message.HasStringPrefix(_config["Prefix"], ref argPos)
+        var user = message.Author as SocketGuildUser;
+        var prefix = DataAccessLayer.GetPrefix(user.Guild.Id);
+        if (!message.HasStringPrefix(prefix, ref argPos)
             && !message.HasMentionPrefix(Client.CurrentUser, ref argPos)) return;
 
         var context = new SocketCommandContext(Client, message);

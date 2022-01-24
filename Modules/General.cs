@@ -12,15 +12,18 @@ using Kokoro.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Kokoro.Common;
+using Kokoro.Database;
 
-public class General : ModuleBase<SocketCommandContext>
+public class General : KokoroModuleBase
 {
     private readonly ILogger<General> _logger;
 
     // You can inject the host. This is useful if you want to shutdown the host via a command, but be careful with it.
     private readonly IHost _host;
 
-    public General(IHost host, ILogger<General> logger)
+
+    public General(IHost host, ILogger<General> logger, DataAccessLayer dataAccessLayer)
+        : base(dataAccessLayer)
     {
         _host = host;
         _logger = logger;
@@ -98,9 +101,21 @@ public class General : ModuleBase<SocketCommandContext>
     #endregion
 
     [Command("prefix")]
-    public async Task GetPrefix()
+    public async Task GetPrefixAsync()
     {
-        await ReplyAsync($"My Prefix is");
+        await ReplyAsync($"My Prefix is {Prefix}.");
+    }
+
+    [Command("prefix set")]
+    public async Task SetPrefixAsync(string prefix = null)
+    {
+        if (prefix == null)
+        {
+            await ReplyAsync($"Please provide a new prefix");
+            return;
+        }
+        await DataAccessLayer.SetPrefix(Context.Guild.Id, prefix);
+        await ReplyAsync($"My new Prefix is {prefix}");
     }
 
     private static LogLevel GetLogLevel(LogSeverity severity)
@@ -111,6 +126,11 @@ public class General : ModuleBase<SocketCommandContext>
 [Alias("k")]
 public class KaraokeModule : KokoroModuleBase
 {
+    public KaraokeModule(DataAccessLayer dataAccessLayer) : base(dataAccessLayer)
+    {
+
+    }
+
     #region Join Queue
     [Command("join")]
     [Summary("Join the Karaoke queue")]
