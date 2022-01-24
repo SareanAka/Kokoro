@@ -1,9 +1,9 @@
 ﻿using Discord;
 using Discord.Commands;
-using Saer.Common;
+using Kokoro.Common;
 using System.Threading.Tasks;
 
-namespace Saer.Modules
+namespace Kokoro.Modules
 {
     public abstract class KokoroModuleBase : ModuleBase<SocketCommandContext>
     {
@@ -20,7 +20,7 @@ namespace Saer.Modules
                 .WithAuthor(author)
                 .WithTitle(title)
                 .WithDescription(description);
-            
+
             return await Context.Channel.SendMessageAsync(embed: builder.Build());
         }
     }

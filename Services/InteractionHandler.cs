@@ -1,4 +1,4 @@
-﻿namespace Saer.Services;
+﻿namespace Kokoro.Services;
 
 using System;
 using System.Collections.Generic;
@@ -52,7 +52,7 @@ internal class InteractionHandler : DiscordClientService
 
     }
 
-    private Task ComponentCommandExecuted(ComponentCommandInfo arg1, Discord.IInteractionContext arg2, IResult arg3)
+    private Task ComponentCommandExecuted(ComponentCommandInfo arg1, IInteractionContext arg2, IResult arg3)
     {
         if (!arg3.IsSuccess)
         {
@@ -81,7 +81,7 @@ internal class InteractionHandler : DiscordClientService
         return Task.CompletedTask;
     }
 
-    private Task ContextCommandExecuted(ContextCommandInfo arg1, Discord.IInteractionContext arg2, IResult arg3)
+    private Task ContextCommandExecuted(ContextCommandInfo arg1, IInteractionContext arg2, IResult arg3)
     {
         if (!arg3.IsSuccess)
         {
@@ -110,7 +110,7 @@ internal class InteractionHandler : DiscordClientService
         return Task.CompletedTask;
     }
 
-    private Task SlashCommandExecuted(SlashCommandInfo arg1, Discord.IInteractionContext arg2, IResult arg3)
+    private Task SlashCommandExecuted(SlashCommandInfo arg1, IInteractionContext arg2, IResult arg3)
     {
         if (!arg3.IsSuccess)
         {

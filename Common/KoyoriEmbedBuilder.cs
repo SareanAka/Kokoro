@@ -1,4 +1,4 @@
-﻿namespace Saer.Common;
+﻿namespace Kokoro.Common;
 
 using System;
 using System.Collections.Generic;
@@ -17,6 +17,6 @@ internal class KoyoriEmbedBuilder : EmbedBuilder
     /// </summary>
     public KoyoriEmbedBuilder()
     {
-        this.WithColor(new Color(230, 158, 206));
+        WithColor(new Color(230, 158, 206));
     }
 }

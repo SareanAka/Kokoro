@@ -1,4 +1,4 @@
-﻿namespace Saer.Modules;
+﻿namespace Kokoro.Modules;
 
 using System;
 using System.Collections.Generic;
@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Kokoro.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Saer.Common;
-using Saer.Services;
+using Kokoro.Common;
 
 public class General : ModuleBase<SocketCommandContext>
 {
@@ -137,7 +137,7 @@ public class KaraokeModule : KokoroModuleBase
         string combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1));
         string author = "Karaoke Queue";
         string title;
-        
+
 
         if (KaraokeList.Users[0] != null)
         {
