@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "JsWMsAduzJsW1hjsCnH0Hg/YzXhxBJtY3wQbFzJX+7nXIIsj6D2SPlf2ZHdRLnC9f2WNvK+thbCjly0EZLW0+w==",
+  "dgSpecHash": "vJlMaMYwcUnttl7fm5vUSkw6fq9iCffnLXLnXnfAyNtzS9eextl/jdcyi5EL9Zt6F2Js9OSa54KIIkJfD1+W7A==",
   "success": true,
   "projectFilePath": "C:\\Users\\tommy\\source\\repos\\Saer\\Saer\\Kokoro.csproj",
   "expectedPackageFiles": [
@@ -12,6 +12,7 @@
     "C:\\Users\\tommy\\.nuget\\packages\\discord.net.rest\\3.2.0\\discord.net.rest.3.2.0.nupkg.sha512",
     "C:\\Users\\tommy\\.nuget\\packages\\discord.net.webhook\\3.2.0\\discord.net.webhook.3.2.0.nupkg.sha512",
     "C:\\Users\\tommy\\.nuget\\packages\\discord.net.websocket\\3.2.0\\discord.net.websocket.3.2.0.nupkg.sha512",
+    "C:\\Users\\tommy\\.nuget\\packages\\holodex.net\\1.0.1\\holodex.net.1.0.1.nupkg.sha512",
     "C:\\Users\\tommy\\.nuget\\packages\\microsoft.entityframeworkcore\\6.0.1\\microsoft.entityframeworkcore.6.0.1.nupkg.sha512",
     "C:\\Users\\tommy\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\6.0.1\\microsoft.entityframeworkcore.abstractions.6.0.1.nupkg.sha512",
     "C:\\Users\\tommy\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\6.0.1\\microsoft.entityframeworkcore.analyzers.6.0.1.nupkg.sha512",

@@ -13,6 +13,7 @@
           "Discord.Net.Commands": "3.2.0",
           "Discord.Net.Core": "3.2.0",
           "Discord.Net.WebSocket": "3.2.0",
+          "Holodex.NET": "1.0.1",
           "Kokoro.Database": "1.0.0",
           "Microsoft.EntityFrameworkCore": "6.0.1",
           "Microsoft.Extensions.Configuration": "6.0.0",
@@ -121,6 +122,17 @@
           "lib/net6.0/Discord.Net.WebSocket.dll": {
             "assemblyVersion": "3.2.0.0",
             "fileVersion": "3.2.0.0"
+          }
+        }
+      },
+      "Holodex.NET/1.0.1": {
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Holodex.NET.dll": {
+            "assemblyVersion": "1.0.1.0",
+            "fileVersion": "1.0.1.0"
           }
         }
       },
@@ -723,6 +735,13 @@
       "sha512": "sha512-TSL4v6tGRGg9zg/YgwWm/IZs+v88922clMh1leZU8ByH94R4C9IsAosJcEF7ixoM27uJ0lBQgIHKTRqTuA5nlA==",
       "path": "discord.net.websocket/3.2.0",
       "hashPath": "discord.net.websocket.3.2.0.nupkg.sha512"
+    },
+    "Holodex.NET/1.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-L4zGN1EB1veGyyg4LVcQQhOT+7cL47n7Qpna8XVJmocHPWKTls1jjipsUoGnqyn0ichPl3lHE935+5P3vg3L/g==",
+      "path": "holodex.net/1.0.1",
+      "hashPath": "holodex.net.1.0.1.nupkg.sha512"
     },
     "Microsoft.EntityFrameworkCore/6.0.1": {
       "type": "package",

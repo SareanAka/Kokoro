@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Kokoro.Common;
 using Kokoro.Database;
+using Kokoro.Models;
 
 public class General : KokoroModuleBase
 {
@@ -146,22 +147,23 @@ public class KaraokeModule : KokoroModuleBase
             socketGuildUser = Context.User as SocketGuildUser;
         }
 
-        if (KaraokeList.Users.Contains(socketGuildUser.Username))
+        if (KaraokeList.Users.Contains(new UserModel(socketGuildUser.Id, socketGuildUser.Username)))
         {
-            await ReplyAsync($"{socketGuildUser.Username} is already in the queue");
-            return;
+                await ReplyAsync($"{socketGuildUser.Username} is already in the queue");
+                return;
         }
 
-        KaraokeList.Users.Add($"{socketGuildUser.Username}");
+        KaraokeList.Users.Add(new UserModel(socketGuildUser.Id, socketGuildUser.Username));
 
-        string combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1));
+
+        string combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1).Select(x => x.UserName));
         string author = "Karaoke Queue";
         string title;
 
 
         if (KaraokeList.Users[0] != null)
         {
-            title = $"Current singer: {KaraokeList.Users[0]}";
+            title = $"Current singer: {KaraokeList.Users[0].UserName}";
         }
         else
         {
@@ -174,6 +176,7 @@ public class KaraokeModule : KokoroModuleBase
     #endregion
 
     #region Remove from Queue
+    
     [Command("remove")]
     [Summary("Remove someone from the karaoke queue")]
     [RequireUserPermission(ChannelPermission.ManageChannels)]
@@ -190,9 +193,9 @@ public class KaraokeModule : KokoroModuleBase
             return;
         }
 
-        if (KaraokeList.Users.Contains(socketGuildUser.Username))
+        if (KaraokeList.Users.Contains(new UserModel(socketGuildUser.Id, socketGuildUser.Username)))
         {
-            KaraokeList.Users.Remove(socketGuildUser.Username);
+            KaraokeList.Users.Remove(new UserModel(socketGuildUser.Id, socketGuildUser.Username));
         }
         else
         {
@@ -207,7 +210,7 @@ public class KaraokeModule : KokoroModuleBase
 
         if (KaraokeList.Users.Count > 1)
         {
-            combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1));
+            combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1).Select(x => x.UserName));
         }
         else
         {
@@ -240,9 +243,9 @@ public class KaraokeModule : KokoroModuleBase
 
         SocketGuildUser socketGuildUser = Context.User as SocketGuildUser;
 
-        if (KaraokeList.Users.Contains(socketGuildUser.Username))
+        if (KaraokeList.Users.Contains(new UserModel(socketGuildUser.Id, socketGuildUser.Username)))
         {
-            KaraokeList.Users.Remove(socketGuildUser.Username);
+            KaraokeList.Users.Remove(new UserModel(socketGuildUser.Id, socketGuildUser.Username));
         }
         else
         {
@@ -256,7 +259,7 @@ public class KaraokeModule : KokoroModuleBase
 
         if (KaraokeList.Users.Count > 1)
         {
-            combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1));
+            combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1).Select(x => x.UserName));
         }
         else
         {
@@ -265,7 +268,7 @@ public class KaraokeModule : KokoroModuleBase
 
         if (KaraokeList.Users.Count > 0)
         {
-            title = $"Current singer: {KaraokeList.Users[0]}";
+            title = $"Current singer: {KaraokeList.Users[0].UserName}";
         }
         else
         {
@@ -294,7 +297,7 @@ public class KaraokeModule : KokoroModuleBase
 
         if (KaraokeList.Users.Count > 1)
         {
-            combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1));
+            combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1).Select(x => x.UserName));
         }
         else
         {
@@ -303,7 +306,7 @@ public class KaraokeModule : KokoroModuleBase
 
         if (KaraokeList.Users.Count > 0)
         {
-            title = $"Current singer: {KaraokeList.Users[0]}";
+            title = $"Current singer: {KaraokeList.Users[0].UserName}";
         }
         else
         {
@@ -325,7 +328,7 @@ public class KaraokeModule : KokoroModuleBase
             return;
         }
 
-        string firsUser = KaraokeList.Users[0];
+        UserModel firsUser = KaraokeList.Users[0];
 
         KaraokeList.Users.Add(firsUser);
         KaraokeList.Users.RemoveAt(0);
@@ -336,7 +339,7 @@ public class KaraokeModule : KokoroModuleBase
 
         if (KaraokeList.Users.Count > 1)
         {
-            combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1));
+            combindedString = string.Join($"\n", KaraokeList.Users.GetRange(1, KaraokeList.Users.Count - 1).Select(x => x.UserName));
         }
         else
         {
@@ -345,16 +348,17 @@ public class KaraokeModule : KokoroModuleBase
 
         if (KaraokeList.Users.Count > 0)
         {
-            title = $"Current singer: {KaraokeList.Users[0]}";
+            title = $"Current singer: {KaraokeList.Users[0].UserName}";
         }
         else
         {
             title = $"The Queue is empty";
         }
 
-
+        await ReplyAsync($"Next up is: <@{KaraokeList.Users[0].UserId}>");
         await SendEmbedAsync(author, title, combindedString);
     }
+    
     #endregion
 
 }

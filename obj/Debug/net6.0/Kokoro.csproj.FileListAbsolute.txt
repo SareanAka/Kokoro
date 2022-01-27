@@ -65,3 +65,4 @@ C:\Users\tommy\source\repos\Saer\Saer\bin\Debug\net6.0\MySqlConnector.dll
 C:\Users\tommy\source\repos\Saer\Saer\bin\Debug\net6.0\Pomelo.EntityFrameworkCore.MySql.dll
 C:\Users\tommy\source\repos\Saer\Saer\bin\Debug\net6.0\Kokoro.Database.dll
 C:\Users\tommy\source\repos\Saer\Saer\bin\Debug\net6.0\Kokoro.Database.pdb
+C:\Users\tommy\source\repos\Saer\Saer\bin\Debug\net6.0\Holodex.NET.dll

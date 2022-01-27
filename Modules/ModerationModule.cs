@@ -8,12 +8,17 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Kokoro.Database;
 using Kokoro.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-public class ModerationModule : ModuleBase
+public class ModerationModule : KokoroModuleBase
 {
+    public ModerationModule(DataAccessLayer dataAccessLayer) : base(dataAccessLayer)
+    {
+
+    }
 
     #region Ban
     [Command("ban")]

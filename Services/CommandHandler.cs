@@ -19,6 +19,7 @@ public class CommandHandler : KokoroService
     private readonly IServiceProvider _provider;
     private readonly CommandService _commandService;
     private readonly IConfiguration _config;
+    Dictionary<ulong, string> serverPrefixes = new Dictionary<ulong, string>();
 
     public CommandHandler(DiscordSocketClient client, ILogger<DiscordClientService> logger, IServiceProvider provider, 
         CommandService commandService, DataAccessLayer dataAccessLayer, IConfiguration config )
@@ -43,7 +44,8 @@ public class CommandHandler : KokoroService
 
         int argPos = 0;
         var user = message.Author as SocketGuildUser;
-        var prefix = DataAccessLayer.GetPrefix(user.Guild.Id);
+        //var prefix = DataAccessLayer.GetPrefix(user.Guild.Id);
+        var prefix = serverPrefixes[user.Guild.Id];
         if (!message.HasStringPrefix(prefix, ref argPos)
             && !message.HasMentionPrefix(Client.CurrentUser, ref argPos)) return;
 
@@ -60,16 +62,4 @@ public class CommandHandler : KokoroService
 
         await context.Channel.SendMessageAsync($"Error: {result}");
     }
-}
-
-public static class KaraokeList
-{
-    private static List<string> users = new List<string>();
-
-    public static List<string> Users
-    {
-        get { return users; }
-        set { users = value; }
-    }
-
 }
