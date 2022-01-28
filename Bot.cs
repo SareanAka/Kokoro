@@ -42,7 +42,7 @@ public class Bot
             })
             .UseInteractionService((context, config) =>
             {
-                config.LogLevel = LogSeverity.Info;
+                config.LogLevel = LogSeverity.Debug;
                 config.UseCompiledLambda = true;
             })
             .ConfigureServices((context, services) =>

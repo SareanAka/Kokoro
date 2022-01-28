@@ -16,18 +16,33 @@ using Microsoft.Extensions.Logging;
 
 public class CommandHandler : KokoroService
 {
+    public static CommandHandler Instance;
     private readonly IServiceProvider _provider;
     private readonly CommandService _commandService;
     private readonly IConfiguration _config;
-    Dictionary<ulong, string> serverPrefixes = new Dictionary<ulong, string>();
+    public Dictionary<ulong, string> ServerPrefixes;
 
     public CommandHandler(DiscordSocketClient client, ILogger<DiscordClientService> logger, IServiceProvider provider, 
-        CommandService commandService, DataAccessLayer dataAccessLayer, IConfiguration config )
+        CommandService commandService, DataAccessLayer dataAccessLayer, IConfiguration config)
         : base(client, logger, config, dataAccessLayer)
     {
+        Instance = this;
         _provider = provider;
         _commandService = commandService;
         _config = config;
+        Client.Ready += ClientReady;
+        Client.JoinedGuild += ClientJoinedGuild;
+    }
+
+    private async Task ClientJoinedGuild(SocketGuild joinedGuild)
+    {
+        await DataAccessLayer.CreateGuildAsync(joinedGuild.Id);
+    }
+
+    private Task ClientReady()
+    {
+        ServerPrefixes = DataAccessLayer.GetPrefixes();
+        return Task.CompletedTask;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -44,8 +59,7 @@ public class CommandHandler : KokoroService
 
         int argPos = 0;
         var user = message.Author as SocketGuildUser;
-        //var prefix = DataAccessLayer.GetPrefix(user.Guild.Id);
-        var prefix = serverPrefixes[user.Guild.Id];
+        var prefix = ServerPrefixes[user.Guild.Id];
         if (!message.HasStringPrefix(prefix, ref argPos)
             && !message.HasMentionPrefix(Client.CurrentUser, ref argPos)) return;
 
