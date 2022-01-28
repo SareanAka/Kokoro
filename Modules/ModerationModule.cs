@@ -24,8 +24,16 @@ public class ModerationModule : KokoroModuleBase
     [Command("ban")]
     [Summary("Ban a user")]
     [RequireUserPermission(GuildPermission.BanMembers)]
-    public async Task BanMembersAsync(IUser socketGuildUser, [Remainder] string reason = null)
+    public async Task BanMembersAsync(IGuildUser socketGuildUser = null, [Remainder] string reason = null)
     {
+        if (socketGuildUser == null)
+        {
+            await ReplyAsync("Please specify a user.");
+            return;
+        }
+        if (reason == null) reason = "No reason specified.";
+        
+
         if (Context.Guild.GetBanAsync(socketGuildUser) == null)
         {
             await Context.Guild.AddBanAsync(socketGuildUser, 0, reason);

@@ -33,7 +33,6 @@ public class General : KokoroModuleBase
 
     #region Ping
     [Command("ping")]
-    [Alias("pong", "hello")]
     [Summary("Bot sends a respons")]
     public async Task PingAsync()
     {
@@ -42,7 +41,7 @@ public class General : KokoroModuleBase
             return;
         }
 
-        _logger.LogInformation("User {user} used the ping command!", Context.User.Username);
+        _logger.LogInformation($"User {Context.User} used the ping command!", Context.User.Username);
         await ReplyAsync("Pong!");
     }
     #endregion
@@ -101,6 +100,7 @@ public class General : KokoroModuleBase
     }
     #endregion
 
+    #region prefix
     [Command("prefix")]
     public async Task GetPrefixAsync()
     {
@@ -120,6 +120,7 @@ public class General : KokoroModuleBase
         CommandHandler.Instance.ServerPrefixes[Context.Guild.Id] = prefix;
         await ReplyAsync($"My new Prefix is {prefix}");
     }
+    #endregion
 
     private static LogLevel GetLogLevel(LogSeverity severity)
         => (LogLevel)Math.Abs((int)severity - 5);
@@ -145,11 +146,22 @@ public class KaraokeModule : KokoroModuleBase
         await SendEmbedAsync(AUTHOR, title, combinedString);
     }
 
+    [Command("")]
+    public async Task EmbedAsync()
+    {
+        await ReplyAsync("Please provide an argument.");
+    }
+
     #region Add Karaoke Channel
     [Command("channel add")]
     [RequireUserPermission(GuildPermission.Administrator)]
-    public async Task AddKaraokeAsync(IMessageChannel karaokeChannel)
+    public async Task AddKaraokeAsync(IMessageChannel karaokeChannel = null)
     {
+        if (karaokeChannel == null)
+        {
+            await ReplyAsync("Please provide a channel");
+            return;
+        }
         await DataAccessLayer.AddKaraokeChannel(Context.Guild.Id, karaokeChannel.Id);
         await ReplyAsync($"<#{karaokeChannel.Id}> has set as the karaoke channel.");
     }
